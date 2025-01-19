@@ -293,8 +293,8 @@ export class Renderer {
             parameterBufferDescriptor
         );
 
-        await this.triangleMaterial.initialize(this.device, "dist/img/chat.jpg", this.materialGroupLayout);
-        await this.quadMaterial.initialize(this.device, "dist/img/floor.jpg", this.materialGroupLayout);
+        await this.triangleMaterial.initialize(this.device, "chat", this.materialGroupLayout);
+        await this.quadMaterial.initialize(this.device, "floor", this.materialGroupLayout);
 
         const urls = [
             "dist/img/sky_back.png",  //x+
