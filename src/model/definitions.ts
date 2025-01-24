@@ -7,7 +7,9 @@ export enum object_types {
 
 export enum pipeline_types {
     SKY,
-    STANDARD
+    STANDARD,
+    POST,
+    HUD,
 }
 
 export interface RenderData {
