@@ -195,8 +195,8 @@ export class Renderer {
         this.triangleMesh = new TriangleMesh(this.device);
         this.quadMesh = new QuadMesh(this.device);
         this.statueMesh = new ObjMesh();
-        await this.statueMesh.initialize(this.device, "dist/models/statue.obj");
-        // await this.statueMesh.initialize(this.device, "dist/models/lowpolyhouse.obj");
+        // await this.statueMesh.initialize(this.device, "dist/models/statue.obj");
+        await this.statueMesh.initialize(this.device, "dist/models/onlyHouse.obj");
         this.triangleMaterial = new Material();
         this.quadMaterial = new Material();
 

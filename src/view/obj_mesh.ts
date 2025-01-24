@@ -150,7 +150,17 @@ export class ObjMesh {
     read_corner(vertex_description: string, result: number[]) {
         const v_vt_vn = vertex_description.split("/");
         const v = this.v[Number(v_vt_vn[0]).valueOf() - 1];
-        const vt = this.vt[Number(v_vt_vn[1]).valueOf() - 1];
+        
+        // const vt = this.vt[Number(v_vt_vn[1]).valueOf() - 1];
+        
+        //CHANGES JZ
+        // Check if texture coordinates exist
+        let vt: vec2 = [0, 0];  // Default to (0, 0) if no texture coordinates are present
+        if (v_vt_vn[1]) {
+            vt = this.vt[Number(v_vt_vn[1]).valueOf() - 1];
+        }
+        //CHANGES JZ
+
         //ignoring normals for now
         result.push(v[0]);
         result.push(v[1]);
