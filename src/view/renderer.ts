@@ -55,6 +55,12 @@ export class Renderer {
     frameBuffer!: Framebuffer;
     hudMaterial!: Material;
 
+    // G-Buffer textures
+    positionTexture!: GPUTexture;
+    normalTexture!: GPUTexture;
+    albedoTexture!: GPUTexture;
+    depthTexture!: GPUTexture;
+
     constructor(canvas: HTMLCanvasElement){
         this.canvas = canvas;
 
