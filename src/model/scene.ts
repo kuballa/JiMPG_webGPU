@@ -9,23 +9,28 @@ export class Scene {
 
     triangles: Triangle[];
     quads: Quad[];
+    trees: Statue[];
     statue: Statue;
     beachSand: Statue;
     player: Camera;
     object_data: Float32Array;
     triangle_count: number;
     quad_count: number;
+    tree_count: number;
 
     constructor() {
 
         this.triangles = [];
         this.quads = [];
+        this.trees = [];
         this.object_data = new Float32Array(16 * 1024);
         this.triangle_count = 0;
         this.quad_count = 0;
+        this.tree_count = 0;
 
         this.make_triangles();
         this.make_quads();
+        this.make_trees();
         this.statue = new Statue(
             [0, 0, 0.05], [0, 0, 0]
         );
@@ -38,6 +43,29 @@ export class Scene {
             [-2, 0, 0.5], 0, 0
         );
 
+    }
+
+    make_trees() {
+        var i: number = 0;
+        let treePositions = [[1, 1, 0], [1, 2, 0], [1, 3, 0], 
+                            [2, 1, 0], [2, 2, 0], [2, 3, 0], 
+                            [3, 1, 0], [3, 2, 0], [3, 3, 0]]
+
+        for (var position in treePositions) {
+            this.trees.push(
+                new Statue(
+                    [treePositions[position][0], treePositions[position][1], treePositions[position][2]],
+                    [0, 0, 0]
+                )
+            );
+
+            var blank_matrix = mat4.create();
+            for (var j: number = 0; j < 16; j++) {
+                this.object_data[16 * i + j] = <number>blank_matrix.at(j);
+            }
+            i++;
+            this.tree_count++;
+        }
     }
 
     make_triangles() {
@@ -105,6 +133,17 @@ export class Scene {
             }
         );
 
+        this.trees.forEach(
+            (tree) => {
+                tree.update();
+                var model = tree.get_model();
+                for (var j: number = 0; j < 16; j++) {
+                    this.object_data[16 * i + j] = <number>model.at(j);
+                }
+                i++
+            }
+        );
+
         this.statue.update();
         var model = this.statue.get_model();
         for (var j: number = 0; j < 16; j++) {
@@ -133,6 +172,7 @@ export class Scene {
             object_counts: {
                 [object_types.TRIANGLE]: this.triangle_count,
                 [object_types.QUAD]: this.quad_count,
+                [object_types.TREE]: this.tree_count,
             }
         }
     }

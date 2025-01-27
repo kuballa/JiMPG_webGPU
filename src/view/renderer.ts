@@ -43,10 +43,12 @@ export class Renderer {
     quadMesh!: QuadMesh;
     statueMesh!: ObjMesh;
     beachSandMesh!: ObjMesh;
+    treeMesh!: ObjMesh;
     triangleMaterial!: Material;
     quadMaterial!: Material;
     statueMaterial!: Material;
     beachSandMaterial!: Material;
+    treeMaterial!: Material;
     objectBuffer!: GPUBuffer;
     parameterBuffer!: GPUBuffer;
     skyMaterial!: CubeMapMaterial;
@@ -199,13 +201,16 @@ export class Renderer {
         this.quadMesh = new QuadMesh(this.device);
         this.statueMesh = new ObjMesh();
         this.beachSandMesh = new ObjMesh();
+        this.treeMesh = new ObjMesh();
         // await this.statueMesh.initialize(this.device, "dist/models/statue.obj");
         await this.statueMesh.initialize(this.device, "dist/models/onlyHouse_1.obj");
         await this.beachSandMesh.initialize(this.device, "dist/models/beachSand.obj");
+        await this.treeMesh.initialize(this.device, "dist/models/tree.obj");
         this.triangleMaterial = new Material();
         this.quadMaterial = new Material();
         this.statueMaterial = new Material();
         this.beachSandMaterial = new Material();
+        this.treeMaterial = new Material();
 
         this.uniformBuffer = this.device.createBuffer({
             size: 64 * 2,
@@ -228,6 +233,7 @@ export class Renderer {
 
         await this.triangleMaterial.initialize(this.device, "chat", this.materialGroupLayout);
         await this.quadMaterial.initialize(this.device, "floor", this.materialGroupLayout);
+        await this.treeMaterial.initialize(this.device, "tree_Texture", this.materialGroupLayout);
         await this.statueMaterial.initialize(this.device, "onlyHouse_Texture", this.materialGroupLayout);
         await this.beachSandMaterial.initialize(this.device, "beachSand", this.materialGroupLayout);
 
@@ -365,6 +371,15 @@ export class Renderer {
             0, objects_drawn
         );
         objects_drawn += renderables.object_counts[object_types.QUAD];
+
+        //Trees
+        renderpass.setVertexBuffer(0, this.treeMesh.buffer);
+        renderpass.setBindGroup(1, this.treeMaterial.bindGroup); 
+        renderpass.draw(
+            this.treeMesh.vertexCount, renderables.object_counts[object_types.TREE], 
+            0, objects_drawn
+        );
+        objects_drawn += renderables.object_counts[object_types.TREE];
 
         //Statue
         renderpass.setVertexBuffer(0, this.statueMesh.buffer);
