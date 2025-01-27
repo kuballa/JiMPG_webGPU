@@ -36,20 +36,20 @@ export class Scene {
         );
 
         this.beachSand = new Statue(
-            [0, 0, 0.08], [0, 0, 0]
+            [0, 0, 0.085], [0, 0, 0]
         );
 
         this.player = new Camera(
-            [-2, 0, 0.5], 0, 0
+            [-2, 0, 5], 0.5, 0.5
         );
 
     }
 
     make_trees() {
         var i: number = 0;
-        let treePositions = [[1, 1, 0], [1, 2, 0], [1, 3, 0], 
-                            [2, 1, 0], [2, 2, 0], [2, 3, 0], 
-                            [3, 1, 0], [3, 2, 0], [3, 3, 0]]
+        let treePositions = [[-6, -3, 0], [-5.5, 3, 0], [-3, 2, 0],
+                            [0, -1, 0], [2, -4, 0], [-2, 4, 0],
+                            [2.5, 1.8, 0], [-1.5, 2.1, 0], [-4.5, -2.7, 0]]
 
         for (var position in treePositions) {
             this.trees.push(
