@@ -144,6 +144,7 @@ export class ObjMesh {
             this.read_corner(vertex_descriptions[1], result);
             this.read_corner(vertex_descriptions[2 + i], result);
             this.read_corner(vertex_descriptions[3 + i], result);
+            // TEST JZ    
        }
     }
 

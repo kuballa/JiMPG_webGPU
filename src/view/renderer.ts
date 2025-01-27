@@ -42,8 +42,11 @@ export class Renderer {
     triangleMesh!: TriangleMesh;
     quadMesh!: QuadMesh;
     statueMesh!: ObjMesh;
+    beachSandMesh!: ObjMesh;
     triangleMaterial!: Material;
     quadMaterial!: Material;
+    statueMaterial!: Material;
+    beachSandMaterial!: Material;
     objectBuffer!: GPUBuffer;
     parameterBuffer!: GPUBuffer;
     skyMaterial!: CubeMapMaterial;
@@ -195,10 +198,14 @@ export class Renderer {
         this.triangleMesh = new TriangleMesh(this.device);
         this.quadMesh = new QuadMesh(this.device);
         this.statueMesh = new ObjMesh();
+        this.beachSandMesh = new ObjMesh();
         // await this.statueMesh.initialize(this.device, "dist/models/statue.obj");
-        await this.statueMesh.initialize(this.device, "dist/models/onlyHouse.obj");
+        await this.statueMesh.initialize(this.device, "dist/models/onlyHouse_1.obj");
+        await this.beachSandMesh.initialize(this.device, "dist/models/beachSand.obj");
         this.triangleMaterial = new Material();
         this.quadMaterial = new Material();
+        this.statueMaterial = new Material();
+        this.beachSandMaterial = new Material();
 
         this.uniformBuffer = this.device.createBuffer({
             size: 64 * 2,
@@ -221,6 +228,8 @@ export class Renderer {
 
         await this.triangleMaterial.initialize(this.device, "chat", this.materialGroupLayout);
         await this.quadMaterial.initialize(this.device, "floor", this.materialGroupLayout);
+        await this.statueMaterial.initialize(this.device, "onlyHouse_Texture", this.materialGroupLayout);
+        await this.beachSandMaterial.initialize(this.device, "beachSand", this.materialGroupLayout);
 
         const urls = [
             "dist/img/sky_back.png",  //x+
@@ -359,9 +368,18 @@ export class Renderer {
 
         //Statue
         renderpass.setVertexBuffer(0, this.statueMesh.buffer);
-        renderpass.setBindGroup(1, this.triangleMaterial.bindGroup); 
+        renderpass.setBindGroup(1, this.statueMaterial.bindGroup); 
         renderpass.draw(
             this.statueMesh.vertexCount, 1, 
+            0, objects_drawn
+        );
+        objects_drawn += 1;
+
+        //BeachSand
+        renderpass.setVertexBuffer(0, this.beachSandMesh.buffer);
+        renderpass.setBindGroup(1, this.beachSandMaterial.bindGroup); 
+        renderpass.draw(
+            this.beachSandMesh.vertexCount, 1, 
             0, objects_drawn
         );
         objects_drawn += 1;

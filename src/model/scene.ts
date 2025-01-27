@@ -10,6 +10,7 @@ export class Scene {
     triangles: Triangle[];
     quads: Quad[];
     statue: Statue;
+    beachSand: Statue;
     player: Camera;
     object_data: Float32Array;
     triangle_count: number;
@@ -26,7 +27,11 @@ export class Scene {
         this.make_triangles();
         this.make_quads();
         this.statue = new Statue(
-            [0, 0, 0], [0, 0, 0]
+            [0, 0, 0.05], [0, 0, 0]
+        );
+
+        this.beachSand = new Statue(
+            [0, 0, 0.08], [0, 0, 0]
         );
 
         this.player = new Camera(
@@ -102,6 +107,13 @@ export class Scene {
 
         this.statue.update();
         var model = this.statue.get_model();
+        for (var j: number = 0; j < 16; j++) {
+            this.object_data[16 * i + j] = <number>model.at(j);
+        }
+        i++;
+
+        this.beachSand.update();
+        var model = this.beachSand.get_model();
         for (var j: number = 0; j < 16; j++) {
             this.object_data[16 * i + j] = <number>model.at(j);
         }

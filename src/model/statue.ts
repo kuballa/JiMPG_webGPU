@@ -12,8 +12,9 @@ export class Statue {
     }
 
     update() {
-        this.eulers[2] += 1;
-        this.eulers[2] %= 360;
+        // two lines of code make a spin of the element
+        // this.eulers[2] += 1;
+        // this.eulers[2] %= 360;
 
         this.model = mat4.create();
         mat4.translate(
