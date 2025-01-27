@@ -275,7 +275,7 @@ export class Renderer {
 
         //make transforms
         const projection = mat4.create();
-        mat4.perspective(projection, Math.PI/4, 800/600, 0.1, 10);
+        mat4.perspective(projection, Math.PI/4, 800/600, 0.1, 100);
 
         const view = renderables.view_transform;
 
