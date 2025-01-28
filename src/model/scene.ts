@@ -41,7 +41,7 @@ export class Scene {
         this.beachSand = new Statue([0, 0, 0.085], [0, 0, 0]);
 
         // Create the player (camera) at a fixed starting position and initial rotation
-        this.player = new Camera([-2, 0, 5], 0.5, 0.5);
+        this.player = new Camera([-4, 0, 2], 1, 1);
     }
 
     // Function to create trees at predefined positions and add them to the scene
