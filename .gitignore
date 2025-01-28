@@ -1,6 +1,6 @@
 # ignore directory
 node_modules
-# dist/*
+dist/*
 
 #ignore json file that is automatically generated
 package-lock.json

@@ -1,3 +1,4 @@
+import { GUI } from 'dat.gui'; // Importing the dat.GUI library
 import sky_shader from "./shaders/sky_shader.wgsl";
 import shader from "./shaders/shaders.wgsl";
 import post_shader from "./shaders/post_shader.wgsl"
@@ -61,6 +62,10 @@ export class Renderer {
     albedoTexture!: GPUTexture;
     depthTexture!: GPUTexture;
 
+    // GUI Controls
+    gui!: GUI;
+    settings: any;
+
     constructor(canvas: HTMLCanvasElement){
         this.canvas = canvas;
 
@@ -84,6 +89,15 @@ export class Renderer {
             [pipeline_types.POST]: null,
             [pipeline_types.HUD]: null,
         }
+
+        // Initialize GUI settings
+        this.settings = {
+            enablePostProcessing: true,  // Post-processing enabled/disabled
+            showHUD: true,               // HUD visibility control
+            cameraSpeed: 0.05,
+            clearColor: { r: 0.1, g: 0.2, b: 0.4, a: 1.0 }
+        };
+        this.gui = new GUI();
     }
 
    async Initialize() {
@@ -99,6 +113,18 @@ export class Renderer {
         await this.makePipelines();
 
         await this.makeBindGroups();
+
+
+        this.setupGUI();
+
+    }
+
+    setupGUI() {
+        // Create GUI controls
+        this.gui.add(this.settings, 'cameraSpeed', 0.01, 0.1).name('Camera Speed');
+        this.gui.add(this.settings, 'enablePostProcessing').name('Enable Post Processing');
+        this.gui.addColor(this.settings, 'clearColor').name('Clear Color');
+        this.gui.add(this.settings, 'showHUD').name('Show HUD');
     }
 
     async setupDevice() {
@@ -244,12 +270,12 @@ export class Renderer {
         await this.beachSandMaterial.initialize(this.device, "beachSand", this.materialGroupLayout);
 
         const urls = [
-            "dist/img/sky_back.png",  //x+
-            "dist/img/sky_front.png",   //x-
-            "dist/img/sky_left.png",   //y+
-            "dist/img/sky_right.png",  //y-
-            "dist/img/sky_top.png", //z+
-            "dist/img/sky_bottom.png",    //z-
+            "dist/img/sky_back.png",        //x+
+            "dist/img/sky_front.png",       //x-
+            "dist/img/sky_left.png",        //y+
+            "dist/img/sky_right.png",       //y-
+            "dist/img/sky_top.png",         //z+
+            "dist/img/sky_bottom.png",      //z-
         ]
         this.skyMaterial = new CubeMapMaterial();
         await this.skyMaterial.initialize(this.device, urls);
@@ -317,7 +343,22 @@ export class Renderer {
         )
     }
 
+    updateClearColor() {
+        // Update depth stencil attachment with the clear color from the GUI settings
+        this.depthStencilAttachment = {
+            view: this.depthStencilView,
+            depthClearValue: 1.0,  // Default depth value
+            depthLoadOp: "clear",  // Ensure the depth is cleared
+            depthStoreOp: "store",
+            stencilLoadOp: "clear",  // Ensure the stencil is cleared
+            stencilStoreOp: "discard",
+        };
+    }
+
     async render(renderables: RenderData, camera: Camera) {
+        
+        // Update clear color based on GUI settings
+        this.updateClearColor();
 
         //Early exit tests
         if (!this.device || !this.pipelines[pipeline_types.STANDARD]) {
@@ -342,7 +383,7 @@ export class Renderer {
         const renderpass : GPURenderPassEncoder = commandEncoder.beginRenderPass({
             colorAttachments: [{
                 view: this.frameBuffer.view,
-                clearValue: {r: 0.5, g: 0.0, b: 0.25, a: 1.0},
+                clearValue: this.settings.clearColor, // Apply the clear color from the GUI
                 loadOp: "clear",
                 storeOp: "store"
             }],
@@ -428,10 +469,13 @@ export class Renderer {
         renderpass.setBindGroup(0, this.frameBuffer.bindGroup);
         renderpass.draw(6, 1, 0, 0);
 
-        // HUD
-        renderpass.setPipeline(this.pipelines[pipeline_types.HUD] as GPURenderPipeline);
-        renderpass.setBindGroup(0, this.hudMaterial.bindGroup);
-        renderpass.draw(6, 1, 0, 0);
+        // Check if HUD should be visible
+        if (this.settings.showHUD) {
+            // HUD
+            renderpass.setPipeline(this.pipelines[pipeline_types.HUD] as GPURenderPipeline);
+            renderpass.setBindGroup(0, this.hudMaterial.bindGroup);
+            renderpass.draw(6, 1, 0, 0);
+        }
 
         renderpass.end();
     }
