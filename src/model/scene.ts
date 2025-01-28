@@ -76,10 +76,15 @@ export class Scene {
     // Function to create triangles at different y-positions and add them to the scene
     make_triangles() {
         var i: number = 0;
+        let trianglePositions = [
+            [-6, -3, -2], [-5.5, 3, -2], [-3, 2, -2],
+            [0, -1, -2], [2, -4, -2], [-2, 4, -2],
+            [2.5, 1.8, -2], [-1.5, 2.1, -2], [-4.5, -2.7, -2]
+        ];
         // Loop through y-values to create triangles at different y-positions along the x-axis
-        for (var y: number = -5; y <= 5; y++) {
+        for (var position in trianglePositions) {
             this.triangles.push(
-                new Triangle([2, y, 0], 0)  // Create triangle object at a fixed x position and y position
+                new Triangle([trianglePositions[position][0], trianglePositions[position][1], trianglePositions[position][2]], 0)  // Create triangle object at a fixed x position and y position
             );
 
             // Initialize a blank transformation matrix (identity matrix)

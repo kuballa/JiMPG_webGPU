@@ -4,7 +4,6 @@ import { Scene } from "../model/scene";
 import $ from "jquery";
 
 export class App {
-
     canvas: HTMLCanvasElement;        // Canvas element to render on
     renderer: Renderer;               // Renderer to handle rendering
     scene: Scene;                     // Scene for handling 3D objects and player movements
@@ -70,6 +69,11 @@ export class App {
             "mousemove",
             (event: MouseEvent) => {this.handle_mouse_move(event);}  // Mouse move handling
         );
+
+        // Set up the button to trigger camera movement
+        $("#move-camera-button").on("click", () => {
+            this.move_camera_route(); // Call the function when the button is clicked
+        });
     }
 
     // Initialize the renderer asynchronously (e.g., setting up WebGL/WebGPU)
@@ -157,5 +161,40 @@ export class App {
         this.scene.spin_player(
             event.movementX / 5, event.movementY / 5  // Adjust sensitivity by dividing by 5
         );
+    }
+
+    move_camera_route() {
+        console.log("Starting the camera movement along a preset route.");
+    
+        // Time tracking variables
+        const duration = 30;  // Duration in seconds
+        const startTime = Date.now();  // Start time
+    
+        // Create a function to update the camera movement over time
+        const moveRoute = () => {
+            // Calculate the time elapsed
+            const elapsedTime = (Date.now() - startTime) / 1000;  // in seconds
+    
+            // Check if the 5 seconds have passed
+            if (elapsedTime >= duration) {
+                console.log("Route completed.");
+                return;  // Stop the route once 5 seconds are over
+            }
+    
+            // Smoothly move the camera forward by a factor proportional to the elapsed time
+            const progress = elapsedTime / duration;  // Progress as a percentage (0 to 1)
+            
+            // Move player forward
+            this.scene.move_player(0, progress * 0.1);  // Scale the movement by progress
+            
+            // Rotate the player as part of the movement
+            this.scene.spin_player(-progress, 0);  // Rotation increases over time
+            
+            // Continue updating the route until 5 seconds are up
+            requestAnimationFrame(moveRoute);
+        };
+    
+        // Start the camera movement
+        moveRoute();
     }
 }

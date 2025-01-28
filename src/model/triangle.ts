@@ -20,6 +20,15 @@ export class Triangle {
         this.eulers[2] += 1;  // Increase the Z-axis rotation by 1 degree
         this.eulers[2] %= 360;  // Ensure the angle stays within 0 to 360 degrees by using modulus
 
+        // Move the object in a circular motion around the Z-axis
+        const radius = 0.05;  // Radius of the circular path
+        const angleInRadians = Deg2Rad(this.eulers[2]);  // Current angle in radians
+        
+        
+        // Update the position based on the circular motion formula
+        this.position[0] += radius * Math.cos(angleInRadians);  // Update the X coordinate
+        this.position[1] += radius * Math.sin(angleInRadians);  // Update the Y coordinate
+        this.position[2] += radius * Math.sin(angleInRadians);  // Update the Z coordinate
         // Create an identity matrix for the triangle's current transformation
         this.model = mat4.create();
 
